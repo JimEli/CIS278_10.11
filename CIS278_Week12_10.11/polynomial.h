@@ -164,11 +164,11 @@ public:
 		Polynomial result;
 
 		// Multiply all a terms by all b terms.
-		for_each(this->terms.cbegin(), this->terms.cend(), [&result, b](auto aterm){
-			for_each(b.terms.cbegin(), b.terms.cend(), [&result, aterm](auto bterm){
+		for_each(this->terms.cbegin(), this->terms.cend(), [&result, b](auto aterm) {
+			for_each(b.terms.cbegin(), b.terms.cend(), [&result, aterm](auto bterm) {
 				result.terms[aterm.first + bterm.first] += (aterm.second * bterm.second);
-			});
-		});
+			} ); 
+		} );
 
 		result.degree = result.getDegree();
 
