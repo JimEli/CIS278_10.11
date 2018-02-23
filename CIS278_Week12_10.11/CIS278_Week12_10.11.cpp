@@ -82,5 +82,7 @@ int main()
 	cout << "a = " << a << endl;
 	b = -a;
 	cout << "Set b = -a, now b = " << b << endl;
+	
+	return 0;
 }
 
