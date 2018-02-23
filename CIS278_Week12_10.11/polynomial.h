@@ -1,3 +1,35 @@
+/*************************************************************************
+* Title: Polynomial Class
+* File: polynomial.h
+* Author: James Eli
+* Date: 2/18/2018
+*
+* Exercise 10.11 on page 495-496, Polynomial Class
+* Develop class Polynomial. The internal representation of a Polynomial is
+* an array of terms. Each term contains a coefficient and an exponent—e.g.,
+* the term
+*   2x^4
+* Has the coefficient 2 and the exponent 4. Develop a complete class
+* containing proper constructor and destructor functions as well as set and
+* get functions. The class should also provide the following overloaded
+* capabilities:
+*   a) Overload the addition operator (+) to add two polynomials.
+*   b) Overload the subtraction operator (-) to subtract two polynomials.
+*   c) Overload the assignment operator to assign one polynomial to another.
+*   d) Overload the multiplication operator (*) to multiply two polynomials.
+*   e) Overload the addition assignment operator (+=), subtraction assignment
+*      operator (-=), and multiplication assignment operator (*=).
+*
+* Notes:
+*  (1) Degree, unary minus, stream and untested evaluate and differentiate
+*      methods added also.
+*  (2) Compiled with MS Visual Studio 2017 Community (v141).
+*
+* Submitted in partial fulfillment of the requirements of PCC CIS-278.
+*************************************************************************
+* Change Log:
+*   02/18/2018: Initial release. JME
+*************************************************************************/
 #include <iostream>  // cout/endl
 #include <string>    // string
 #include <iomanip>   // setprecision
@@ -8,13 +40,13 @@
 #include <cmath>     // fabs
 #include <initializer_list>
 
-using namespace std;
+#include "range_for_reverse_iterator.h"
 
 class Polynomial
 {
 private:
 	// Polynomial terms in format of map<exponent, coefficient>.
-	map<unsigned, double> terms;
+	std::map<unsigned, double> terms;
 
 	// degree of polynomial (0 for the zero polynomial).
 	unsigned degree;
@@ -39,7 +71,12 @@ public:
 	}
 
 	// List initaializer constructor.
-	Polynomial(initializer_list<pair<const unsigned, double>> init) : terms(init) { }
+	Polynomial(std::initializer_list<std::pair<const unsigned, double>> init) : terms(init)
+	{
+		// Init empty 0 term in polynomial.
+		if (!exists(0))
+			setTerm(0, 0.);
+	}
 
 	// Default destructor.
 	~Polynomial() = default;
@@ -108,89 +145,94 @@ public:
 	}
 */
 	// Overload assignment operator.
-	Polynomial& operator= (const Polynomial& rhs) {
+	Polynomial& operator= (const Polynomial rhs) {
 		// Check for self-assignment.
 		if (this == &rhs)
 			// Skip assignment, and just return *this.
 			return *this;
 
+		// Zeroize poly, and reassign this to rhs terms.
 		terms.clear();
-		//setTerm(0, 0);
+		setTerm(0, 0);
+
 		for (auto t : rhs.terms)
 			setTerm(t.first, t.second);
+		
 		degree = rhs.degree;
 
 		return *this;
 	}
 
 	// Add polynomials via overloaded binary plus operator.
-	Polynomial operator+ (Polynomial& b)
+	Polynomial operator+ (Polynomial rhs)
 	{
-		Polynomial result;
+		// Copy this's terms to result poly.
+		Polynomial result = *this;
 
-		for (auto t : this->terms)
-			result.setTerm(t.first, t.second);
-
-		result.terms = accumulate(b.terms.cbegin(), b.terms.cend(), result.terms,
-			[](map<unsigned, double>& t, const pair<const unsigned, double>& p)
+		// Use accumulator to add rhs to lhs terms. 
+		result.terms = accumulate(rhs.terms.cbegin(), rhs.terms.cend(), result.terms,
+			[](std::map<unsigned, double>& t, const std::pair<const unsigned, double>& p)
 			{ return (t[p.first] += p.second, t); }
 		);
 
+		// Set poly result's degree.
 		result.degree = result.getDegree();
 
 		return result;
 	}
 
 	// Subtract polynomials via overloaded binary minus operator.
-	Polynomial operator- (Polynomial& b)
+	Polynomial operator- (Polynomial rhs)
 	{
-		Polynomial result;
+		// Copy this's terms to result poly.
+		Polynomial result = *this;
 
-		for (auto t : this->terms)
-			result.setTerm(t.first, t.second);
-
-		result.terms = accumulate(b.terms.cbegin(), b.terms.cend(), result.terms,
-			[](map<unsigned, double> &t, const pair<const unsigned, double> &p)
+		// Use accumulator to subtract rhs from lhs terms. 
+		result.terms = accumulate(rhs.terms.cbegin(), rhs.terms.cend(), result.terms,
+			[](std::map<unsigned, double> &t, const std::pair<const unsigned, double> &p)
 			{ return (t[p.first] -= p.second, t); }
 		);
+
+		// Set poly result's degree.
 		result.degree = result.getDegree();
 
 		return result;
 	}
 
 	// Multiply Polynomials via overloaded binary multiplication operator.
-	Polynomial operator* (Polynomial b)
+	Polynomial operator* (Polynomial rhs)
 	{
 		Polynomial result;
 
-		// Multiply all a terms by all b terms.
-		for_each(this->terms.cbegin(), this->terms.cend(), [&result, b](auto aterm) {
-			for_each(b.terms.cbegin(), b.terms.cend(), [&result, aterm](auto bterm) {
-				result.terms[aterm.first + bterm.first] += (aterm.second * bterm.second);
-			} ); 
-		} );
+		// Multiply all lhs (or this) terms by all rhs terms.
+		for_each(this->terms.cbegin(), this->terms.cend(), [&result, rhs](auto lhsTerm){
+			for_each(rhs.terms.cbegin(), rhs.terms.cend(), [&result, lhsTerm](auto rhsTerm){
+				result.terms[lhsTerm.first + rhsTerm.first] += (lhsTerm.second * rhsTerm.second);
+			});
+		});
 
+		// Set polynomial result's degree.
 		result.degree = result.getDegree();
 
 		return result;
 	}
 
-	// Overloaded unary += operator.
-	Polynomial operator+= (Polynomial& p)
+	// Overloaded unary += operator, passes our to "overloaded +".
+	Polynomial& operator+= (Polynomial p)
 	{
 		*this = *this + p;
 		return *this;
 	}
 
-	// Overloaded unary -= operator.
-	Polynomial operator-= (Polynomial& p)
+	// Overloaded unary -= operator, passes our to "overloaded -".
+	Polynomial& operator-= (Polynomial p)
 	{
 		*this = *this - p;
 		return *this;
 	}
 
-	// Overloaded unary *= operator.
-	Polynomial operator*= (const Polynomial p)
+	// Overloaded unary *= operator, passes to our "overloaded *".
+	Polynomial& operator*= (const Polynomial p)
 	{
 		*this = *this * p;
 		return *this;
@@ -201,6 +243,7 @@ public:
 	{
 		Polynomial p = *this;
 
+		// Iterate through all terms negating them.
 		for (auto& t : p.terms)
 			t.second = -t.second;
 
@@ -208,24 +251,26 @@ public:
 	}
 
 	// Stream polynomial.
-	friend ostream& operator<< (ostream& os, const Polynomial& p)
+	friend std::ostream& operator<< (std::ostream& os, const Polynomial& p)
 	{
-		string s{ "" };
+		// Loop, filling string with poly terms.
+		std::string s{ "" };
 
-		for (auto it = p.terms.rbegin(); it != p.terms.rend(); ++it) {
-			unsigned exponent = it->first;
-			double coefficient = it->second;
-			stringstream stream;
-
+		// Iterate backwards through all terms.
+		for (auto& t : reverse(p.terms))
+		{
 			// Only terms with coefficients are printed.
-			if (coefficient)
+			if (t.second)
 			{
+				std::stringstream stream;
+
 				// Print leading sign except on first term.
-				s += (coefficient > 0 ? (it == p.terms.rbegin() ? "" : " + ") : " - ");
-				stream << fixed << setprecision(1) << abs(coefficient);
-				// Skip exponents of 0.
-				if (exponent)
-					stream << "x^" << exponent;
+				s += (t.second > 0 ? (t == *p.terms.rbegin() ? "" : " + ") : " - ");
+				stream << std::fixed << std::setprecision(1) << abs(t.second);
+				// Skip display of superfluous 0 exponent?
+				if (t.first)
+					stream << "x^" << t.first;
+				// Add to string.
 				s += stream.str();
 			}
 		}
@@ -233,4 +278,3 @@ public:
 		return os << s;
 	}
 };
-
