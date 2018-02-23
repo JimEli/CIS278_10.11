@@ -217,14 +217,14 @@ public:
 		return result;
 	}
 
-	// Overloaded unary += operator, passes our to "overloaded +".
+	// Overloaded unary += operator, passes to our "overloaded +".
 	Polynomial& operator+= (Polynomial p)
 	{
 		*this = *this + p;
 		return *this;
 	}
 
-	// Overloaded unary -= operator, passes our to "overloaded -".
+	// Overloaded unary -= operator, passes to our "overloaded -".
 	Polynomial& operator-= (Polynomial p)
 	{
 		*this = *this - p;
