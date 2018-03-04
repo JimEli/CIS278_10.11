@@ -2,7 +2,7 @@
 ## Exercise 10.11
 ### Polynomial Class
 
-Exercise 10.11 on page 495-496, Polynomial Class
+Exercise 10.11 on page 495-496, C++ How to Program, 10/e, Deitel
 
 Develop class Polynomial. The internal representation of a Polynomial is an array of terms. Each term contains a coefficient and an exponent—e.g., the term
 ```Text
