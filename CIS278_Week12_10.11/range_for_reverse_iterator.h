@@ -8,7 +8,7 @@
  * for them in the range-based for loop.
  *
  * This is fixed by creating a proxy template which uses some 
- * Cc++11 features. This template proxy assumes the class provides 
+ * C++11 features. This template proxy assumes the class provides 
  * reverse iterators via rbegin() and rend(), in the same manner 
  * that the range-based for loop assumes the object passed provides 
  * begin() and end().
@@ -19,33 +19,33 @@
  *     cout << c;
  */
 
-template<class Cont>
+template<class C>
 class const_reverse_wrapper {
-	const Cont& container;
+	const C& container;
 
 public:
-	const_reverse_wrapper(const Cont& cont) : container(cont) { }
+	const_reverse_wrapper(const C& cont) : container(cont) { }
 	decltype(container.rbegin()) begin() const { return container.rbegin(); }
 	decltype(container.rend()) end() const { return container.rend(); }
 };
 
-template<class Cont>
+template<class C>
 class reverse_wrapper {
-	Cont& container;
+	C& container;
 
 public:
-	reverse_wrapper(Cont& cont) : container(cont) { }
+	reverse_wrapper(C& cont) : container(cont) { }
 	decltype(container.rbegin()) begin() { return container.rbegin(); }
 	decltype(container.rend()) end() { return container.rend(); }
 };
 
-template<class Cont>
-const_reverse_wrapper<Cont> reverse(const Cont& cont) {
-	return const_reverse_wrapper<Cont>(cont);
+template<class C>
+const_reverse_wrapper<C> reverse(const C& cont) {
+	return const_reverse_wrapper<C>(cont);
 }
 
-template<class Cont>
-reverse_wrapper<Cont> reverse(Cont& cont) {
-	return reverse_wrapper<Cont>(cont);
+template<class C>
+reverse_wrapper<C> reverse(C& cont) {
+	return reverse_wrapper<C>(cont);
 }
 
