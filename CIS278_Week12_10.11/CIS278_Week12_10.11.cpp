@@ -32,8 +32,12 @@
 *************************************************************************
 * Change Log:
 *   02/18/2018: Initial release. JME
+*   04/12/2018: Added boost test file. JME
 *************************************************************************/
+#ifdef NDEBUG
+
 #include <iostream>  // cout/endl
+
 #include "polynomial.h" // Our polynomial class.
 
 using std::cout;
@@ -48,15 +52,16 @@ int main()
 	a.setTerm(2, -1);
 	a.setTerm(0, 3);
 
-	// Create another polynomial, 6x^3 - 3x^2 + 4 with list initalizer.
-	Polynomial b({ { 2, -3 },{ 0, 4 } });
+	// Create another polynomial, -3x^2 + 4 with list initalizer.
+	Polynomial b({ { 2, -3 }, { 0, 4 } });
 
 	// Output some information about polynomials.
 	cout << "degree of (" << a << ") is: " << a.getDegree() << endl;
+	
 	// Get a term's coefficient.
 	double c;
-	if (b.getTerm(3, c))
-		cout << "Coefficient of 3rd term of (" << b << ") is: " << c << endl;
+	if (b.getTerm(2, c))
+		cout << "Coefficient of 2nd term of (" << b << ") is: " << c << endl;
 
 	// These two methods not fully tested.
 	//cout << "(" << a << ") evaluated at 2 = " << a.evaluate(2) << endl;
@@ -77,12 +82,21 @@ int main()
 	cout << "Set a += b, now a = " << a << endl;
 	a -= b;
 	cout << "Set a -= b, now a = " << a << endl;
+	a *= b;
+	cout << "Set a *= b, now a = " << a << endl;
 
 	// Unary negate.
 	cout << "a = " << a << endl;
 	b = -a;
 	cout << "Set b = -a, now b = " << b << endl;
-	
+
+	// Equality.
+	cout << "a = " << a << endl;
+	cout << "b = " << b << endl;
+	cout << "Is a == b? " << std::boolalpha << (a == b) << endl;
+	cout << "b = " << -b << endl;
+	cout << "Is a == -b? " << std::boolalpha << (a == -b) << endl;
+
 	return 0;
 }
-
+#endif
