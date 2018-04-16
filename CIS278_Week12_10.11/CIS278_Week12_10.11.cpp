@@ -26,7 +26,8 @@
 * Notes:
 *  (1) Degree, unary minus, stream and untested evaluate and differentiate 
 *      methods added also.
-*  (2) Compiled with MS Visual Studio 2017 Community (v141).
+*  (2) Compile release version if boost is not installed.
+*  (3) Compiled with MS Visual Studio 2017 Community (v141).
 *
 * Submitted in partial fulfillment of the requirements of PCC CIS-278.
 *************************************************************************
@@ -46,6 +47,9 @@ using std::endl;
 // Perform basic demonstration of Polynomial class.
 int main()
 {
+	// Demo.
+	cout << "Polynomial Class Demonstration Program\n\n";
+
 	// Create a polynomial, 7x^4 - x^2 + 3.
 	Polynomial a;
 	a.setTerm(4, 7);
@@ -95,7 +99,19 @@ int main()
 	cout << "b = " << b << endl;
 	cout << "Is a == b? " << std::boolalpha << (a == b) << endl;
 	cout << "b = " << -b << endl;
-	cout << "Is a == -b? " << std::boolalpha << (a == -b) << endl;
+	cout << "Is a == -b now? " << std::boolalpha << (a == -b) << endl;
+
+	// Create a polynomial, 7x^4 - 2x^2 + 3.
+	Polynomial dividend;
+	dividend.setTerm(4, 7);
+	dividend.setTerm(2, -2);
+	dividend.setTerm(0, 3);
+
+	// Create another polynomial, x + 1 with list initalizer.
+	Polynomial divisor({ { 1, 1 }, { 0, 1 } });
+
+	// Output some information about polynomials.
+	cout << "(" << dividend << ") / (" << divisor << ") = " << (dividend / divisor) << endl;
 
 	return 0;
 }
