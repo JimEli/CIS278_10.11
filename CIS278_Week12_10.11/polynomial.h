@@ -30,7 +30,7 @@
 *************************************************************************
 * Change Log:
 *   02/18/2018: Initial release. JME
-*   04/03/2018: Divede into .h & .cpp files. JME
+*   04/03/2018: Divided into .h & .cpp files. JME
 *               Changed return value from getDegree() to unsigned. JME
 *   04/12/2018: Added boost test file. JME
 *************************************************************************/
@@ -163,48 +163,94 @@ public:
 	}
 
 	// Overloaded unary += operator, passes our to "overloaded +".
-	const Polynomial& operator+= (const Polynomial p)
+	const Polynomial& operator+= (const Polynomial rhs)
 	{
-		*this = *this + p;
+		*this = *this + rhs;
 		return *this;
 	}
 
 	// Overloaded unary -= operator, passes our to "overloaded -".
-	const Polynomial& operator-= (const Polynomial p)
+	const Polynomial& operator-= (const Polynomial rhs)
 	{
-		*this = *this - p;
+		*this = *this - rhs;
 		return *this;
 	}
 
 	// Overloaded unary *= operator, passes to our "overloaded *".
-	const Polynomial& operator*= (const Polynomial p)
+	const Polynomial& operator*= (const Polynomial rhs)
 	{
-		*this = *this * p;
+		*this = *this * rhs;
 		return *this;
 	}
 
 	// Overloaded unary minus operator.
 	const Polynomial operator- ()
 	{
-		Polynomial p = *this;
+		Polynomial lhs = *this;
 
 		// Iterate through all terms negating them.
-		for (auto& t : p.terms)
+		for (auto& t : lhs.terms)
 			t.second = -t.second;
 
-		return p;
+		return lhs;
+	}
+
+	// Divide polynomials via overloaded binary modulus operator.
+	const Polynomial operator% (Polynomial& rhs)
+	{
+		// TODO: 
+		return Polynomial();
+	}
+	
+	// Polynomial long division via overloaded binary divide operator.
+	const Polynomial operator/ (Polynomial& divisor)
+	{
+		// Check for division by zero.
+		double c{ 0 };
+
+		if (divisor.exists(0))
+			divisor.getTerm(0, c);
+		if (divisor.getDegree() == 0 && c == 0 )
+			throw std::overflow_error("Divide by zero");
+
+		// Is divisor larger than dividend?
+		if (divisor.evaluate(EVALUATION_CONSTANT) > this->evaluate(EVALUATION_CONSTANT))
+			// Return zero.
+			return Polynomial();
+
+		Polynomial dividend = *this;
+		Polynomial quotient;
+
+		// Iterate through all dividend terms.
+		do {
+			// Coefficients of divisor and dividend.
+			double divisorCoefficient{ 0. };
+			double dividendCoefficient{ 0. };
+
+			// Divide coefficients of highest terms, subtract exponents, insert as new quotient term.
+			divisor.getTerm(divisor.getDegree(), divisorCoefficient);
+			dividend.getTerm(dividend.getDegree(), dividendCoefficient);
+			quotient.setTerm(dividend.getDegree() - divisor.getDegree(), dividendCoefficient / divisorCoefficient);
+
+			// Multiply divisor by quotient and subtract from dividend.
+			dividend = *this - (divisor * quotient);
+
+			// Repeat until reaching final term.
+		} while (dividend.getDegree() != 0);
+
+		return quotient;
 	}
 
 	// Overload equality operator.
 	const bool operator== (Polynomial rhs)
 	{
-		Polynomial p = *this;
+		Polynomial lhs = *this;
 
-		if (p.getDegree() != rhs.getDegree())
+		if (lhs.getDegree() != rhs.getDegree())
 			return false;
 
 		// Iterate through all lhs terms.
-		for (auto& t : p.terms)
+		for (auto& t : lhs.terms)
 		{
 			double c;
 
@@ -289,46 +335,3 @@ public:
 	}
 };
 
-/*
-void Polynomial::Shift(size_t shift) {
-	if (shift == 0) 
-		return;
-
-	vector<double> temp(shift);
-	for (int i = 0; i <= degree; ++i) 
-		temp.push_back(coefficients[i]);
-
-	coefficients = temp;
-	degree += shift;
-}
-
-Polynomial operator/ (const Polynomial& lhs, const Polynomial& rhs)
-{
-	Polynomial quotient;
-	Polynomial mod;
-	mod = *this;
-	size_t my_degree = mod.getDegree();
-	size_t rhs_degree = rhs.getDegree();
-
-	if (rhs_degree == 0 && rhs[0] == 0) 
-		throw std::overflow_error("Divide by zero");
-
-	if (my_degree < rhs_degree) {
-		quotient = Polynomial();
-		mod = rhs;
-		return;
-	}
-
-	while (mod.getDegree() >= rhs_degree && !(mod[0] == 0 && mod.getDegree() == 0)) {
-		double coef = mod[mod.getDegree()] / rhs[rhs_degree];
-		if (coef == 0)
-			break;
-		unsigned degree_diff = mod.getDegree() - rhs_degree;
-		Polynomial temp(coef);
-		temp.Shift(degree_diff);
-		quotient += temp;
-		mod -= temp * rhs;
-	}
-	return quotient;
-}
-*/
