@@ -10,7 +10,10 @@
 * 
 * Notes:
 *  (1) Compiled with MS Visual Studio 2017 Community (v141).
-*  (2) Compiled with boost test 1_66-0.
+*  (2) Compiled with boost test 1_66_0.
+*  (3) Add (appropriate) boost include and lib diretories to project:
+*      C:\Program Files\boost\boost_1_66_0
+*      C:\Program Files\boost\boost_1_66_0\stage\lib
 *
 * Submitted in partial fulfillment of the requirements of PCC CIS-278.
 *************************************************************************
@@ -112,10 +115,23 @@ BOOST_AUTO_TEST_CASE(test_multiplication)
 	// Create polynomial, -3x^2 + 4.
 	Polynomial b({ { 2, -3. }, { 0, 4. } });
 	// Answer to multiplication, -21.0x^6 + 31.0x^4 - 13.0x^2 + 12.0
-	Polynomial answer({ { 6, -21. }, { 4, 31. }, { 2, -13. }, { 0, 12. } });
-	
+	Polynomial answer({ { 6, -21. },{ 4, 31. },{ 2, -13. },{ 0, 12. } });
+
 	// Multiplication (7.0x^4 - 1.0x^2 + 3.0) * ( -3.0x^2 + 4.0) = -21.0x^6 + 31.0x^4 - 13.0x^2 + 12.0
 	BOOST_CHECK(answer == (a * b));
+}
+
+BOOST_AUTO_TEST_CASE(test_division)
+{
+	// Create dividend polynomial, 7x^4 - 2x^2 + 3.
+	Polynomial dividend({ { 4, 7. }, { 2, -2. }, { 0, 3. } });
+	// Create divisor polynomial, x + 1.
+	Polynomial divisor({ { 1, 1 }, { 0, 1 } });
+	// Answer to division, 7x^3 - 7x^2 + 5x - 5 (remainder 8).
+	Polynomial answer({ { 3, 7. }, { 2, -7. }, { 1, 5. }, { 0, -5. } });
+
+	// Division (7x^4 - 2x^2 + 3) / (x + 1) = 7x^3 - 7x^2 + 5x - 5 (remainder 8).
+	BOOST_CHECK(answer == (dividend / divisor));
 }
 
 BOOST_AUTO_TEST_CASE(test_unary_addition) 
