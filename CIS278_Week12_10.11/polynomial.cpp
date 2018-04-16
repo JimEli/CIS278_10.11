@@ -29,11 +29,14 @@ bool Polynomial::exists(const unsigned& exponent) const
 void Polynomial::setTerm(const unsigned exponent, const double coefficient)
 {
 	// Set or update an existing polynomial term.
-	terms[exponent] += coefficient;
+	if (coefficient != 0.)
+	{
+		terms[exponent] += coefficient;
 
-	// Update polynomial degree.
-	if (exponent > degree)
-		degree = exponent;
+		// Update polynomial degree.
+		if (exponent > degree)
+			degree = exponent;
+	}
 }
 
 // Getter function for term coefficient.
@@ -52,6 +55,10 @@ bool const Polynomial::getTerm(const unsigned exponent, double& coefficient)
 // Getter function for polynomial degree.
 unsigned Polynomial::getDegree() const
 {
+	// Check for and remove any null terms.
+	// TODO.
+	
+	// Return highest degree.
 	return terms.rbegin()->first;
 }
 
@@ -60,7 +67,7 @@ double Polynomial::evaluate(double x)
 {
 	double p{ 0. };
 
-	for (auto t : terms) 
+	for (auto t : terms)
 		p += (pow(x, t.first) * t.second);
 
 	return p;
