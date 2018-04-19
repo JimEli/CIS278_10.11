@@ -53,12 +53,12 @@ int main()
 
 	// Create a polynomial, 7x^4 - x^2 + 3.
 	Polynomial a;
-	a.setTerm(4, 7);
-	a.setTerm(2, -1);
-	a.setTerm(0, 3);
+	a.setTerm(4, 7.);
+	a.setTerm(2, -1.);
+	a[0] = 3.;
 
 	// Create another polynomial, -3x^2 + 4 with list initalizer.
-	Polynomial b({ { 2, -3 }, { 0, 4 } });
+	Polynomial b({ { 2, -3. }, { 0, 4. } });
 
 	// Output some information about polynomials.
 	cout << "degree of (" << a << ") is: " << a.getDegree() << endl;
@@ -67,6 +67,7 @@ int main()
 	double c;
 	if (b.getTerm(2, c))
 		cout << "Coefficient of 2nd term of (" << b << ") is: " << c << endl;
+	cout << "Coefficient of 2nd term of (" << b << ") is: " << b[2] << endl;
 
 	// These two methods not fully tested.
 	//cout << "(" << a << ") evaluated at 2 = " << a.evaluate(2) << endl;
@@ -104,19 +105,18 @@ int main()
 
 	// Create a polynomial, 7x^4 - 2x^2 + 3.
 	Polynomial dividend;
-	dividend.setTerm(4, 7);
-	dividend.setTerm(2, -2);
-	dividend.setTerm(0, 3);
-
+	dividend[4] = 7.;
+	dividend[2] = -2.;
+	dividend.setTerm(0, 3.);
 	// Create another polynomial, x + 1 with list initalizer.
-	Polynomial divisor({ { 1, 1 }, { 0, 1 } });
-
-	// Output some information about polynomials.
+	Polynomial divisor({ { 1, 1. }, { 0, 1. } });
+	// Divison and modulus.
 	cout << "(" << dividend << ") / (" << divisor << ") = " << (dividend / divisor) << endl;
-
+	cout << "(" << dividend << ") % (" << divisor << ") = " << (dividend % divisor) << endl;
 	Polynomial aa({ { 3, 1. },{ 2, -2. },{ 0, -4. } });
-	Polynomial bb({ { 1, 1 },{ 0, -3 } });
+	Polynomial bb({ { 1, 1. },{ 0, -3. } });
 	cout << "(" << dividend << ") / (" << divisor << ") = " << (aa / bb) << endl;
+	cout << "(" << dividend << ") % (" << divisor << ") = " << (aa % bb) << endl;
 
 	return 0;
 }
