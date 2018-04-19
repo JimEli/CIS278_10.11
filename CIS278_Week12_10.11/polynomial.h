@@ -46,19 +46,16 @@
 
 #include "range_for_reverse_iterator.h"
 
-const double EVALUATION_CONSTANT{ 1.1 };
+// Used to calculate poly evaluation for comparison operators.
+static const double EVALUATION_CONSTANT{ 1.1 };
 
 class Polynomial
 {
 private:
-	// Polynomial terms contained in a map in the 
-	// format of map<exponent, coefficient>.
+	// Polynomial terms contained in map in format of map<exponent, coefficient>.
 	std::map<unsigned, double> terms;
 
-	// degree of polynomial (0 for the zero polynomial).
-	unsigned degree;
-
-	// Determines if a term exists for exponent.
+	// Determines if a term exists for given exponent.
 	bool exists(const unsigned& exponent) const;
 
 public:
@@ -75,12 +72,31 @@ public:
 	// Getter function for term coefficient.
 	bool const getTerm(const unsigned exponent, double& coefficient);
 	// Getter function for polynomial degree.
-	unsigned getDegree() const;
+	//unsigned getDegree() const;
+	unsigned getDegree();
 
-	// Uses Horner's method to calculate the polynomial evaluated at x.
+	// Evaluate polynomial at x (used by comparison operations).
 	double evaluate(double x);
 	// Differentiate polynomial and return result.
 	Polynomial differentiate();
+
+	// Return polynomial coefficient at exponent index.
+	double operator[] (const int exponent) const
+	{
+		if (exponent < 0)
+			throw std::out_of_range("Index < 0");
+	
+		return terms.at(exponent);
+	}
+
+	// Set polynomial coefficient at exponent index.
+	double& operator[] (const int exponent)  
+	{
+		if (exponent < 0)
+			throw std::out_of_range("Index < 0");
+		
+		return terms[exponent];
+	}
 
 	// Overload assignment operator.
 	const Polynomial& operator= (const Polynomial rhs)
@@ -92,12 +108,9 @@ public:
 
 		// Zeroize poly, and reassign this to rhs terms.
 		terms.clear();
-		setTerm(0, 0);
 
 		for (auto t : rhs.terms)
-			setTerm(t.first, t.second);
-
-		degree = rhs.degree;
+			terms[t.first] = t.second;
 
 		return *this;
 	}
@@ -116,9 +129,6 @@ public:
 			}
 		);
 
-		// Set poly result's degree.
-		result.degree = result.getDegree();
-
 		return result;
 	}
 
@@ -136,9 +146,6 @@ public:
 			}
 		);
 
-		// Set poly result's degree.
-		result.degree = result.getDegree();
-
 		return result;
 	}
 
@@ -155,9 +162,6 @@ public:
 				result.terms[lhsTerm.first + rhsTerm.first] += (lhsTerm.second * rhsTerm.second);
 			} );
 		} );
-
-		// Set polynomial result's degree.
-		result.degree = result.getDegree();
 
 		return result;
 	}
@@ -195,52 +199,6 @@ public:
 		return lhs;
 	}
 
-	// Divide polynomials via overloaded binary modulus operator.
-	const Polynomial operator% (Polynomial& rhs)
-	{
-		// TODO: 
-		return Polynomial();
-	}
-	
-	// Polynomial long division via overloaded binary divide operator.
-	const Polynomial operator/ (Polynomial& divisor)
-	{
-		// Check for division by zero.
-		double c{ 0 };
-
-		if (divisor.exists(0))
-			divisor.getTerm(0, c);
-		if (divisor.getDegree() == 0 && c == 0 )
-			throw std::overflow_error("Divide by zero");
-
-		// Is divisor larger than dividend?
-		if (divisor.evaluate(EVALUATION_CONSTANT) > this->evaluate(EVALUATION_CONSTANT))
-			// Return zero.
-			return Polynomial();
-
-		Polynomial dividend = *this;
-		Polynomial quotient;
-
-		// Iterate through all dividend terms.
-		do {
-			// Coefficients of divisor and dividend.
-			double divisorCoefficient{ 0. };
-			double dividendCoefficient{ 0. };
-
-			// Divide coefficients of highest terms, subtract exponents, insert as new quotient term.
-			divisor.getTerm(divisor.getDegree(), divisorCoefficient);
-			dividend.getTerm(dividend.getDegree(), dividendCoefficient);
-			quotient.setTerm(dividend.getDegree() - divisor.getDegree(), dividendCoefficient / divisorCoefficient);
-
-			// Multiply divisor by quotient and subtract from dividend.
-			dividend = *this - (divisor * quotient);
-
-			// Repeat until reaching final term.
-		} while (dividend.getDegree() != 0);
-
-		return quotient;
-	}
-
 	// Overload equality operator.
 	const bool operator== (Polynomial rhs)
 	{
@@ -251,15 +209,9 @@ public:
 
 		// Iterate through all lhs terms.
 		for (auto& t : lhs.terms)
-		{
-			double c;
-
-			// Check if rhs term exists.
-			if (rhs.getTerm(t.first, c))
-				// If coefficients don't match then fail.
-				if (t.second != c)
-					return false;
-		}
+			// If coefficients don't match then fail.
+			if (rhs[t.first] != t.second)
+				return false;
 
 		return true;
 	}
@@ -273,7 +225,7 @@ public:
 	// Overload greater than operator.
 	const bool operator> (Polynomial rhs)
 	{
-		if (evaluate(EVALUATION_CONSTANT) > rhs.evaluate(EVALUATION_CONSTANT))
+		if (abs(evaluate(EVALUATION_CONSTANT)) > abs(rhs.evaluate(EVALUATION_CONSTANT)))
 			return true;
 
 		return false;
@@ -282,7 +234,7 @@ public:
 	// Overload greater than or equal operator.
 	const bool operator>= (Polynomial rhs)
 	{
-		if (evaluate(EVALUATION_CONSTANT) >= rhs.evaluate(EVALUATION_CONSTANT))
+		if (abs(evaluate(EVALUATION_CONSTANT)) >= abs(rhs.evaluate(EVALUATION_CONSTANT)))
 			return true;
 
 		return false;
@@ -291,7 +243,7 @@ public:
 	// Overload less than operator.
 	const bool operator< (Polynomial rhs)
 	{
-		if (evaluate(EVALUATION_CONSTANT) < rhs.evaluate(EVALUATION_CONSTANT))
+		if (abs(evaluate(EVALUATION_CONSTANT)) < abs(rhs.evaluate(EVALUATION_CONSTANT)))
 			return true;
 
 		return false;
@@ -300,10 +252,46 @@ public:
 	// Overload less than or equal operator.
 	const bool operator<= (Polynomial rhs)
 	{
-		if (evaluate(EVALUATION_CONSTANT) <= rhs.evaluate(EVALUATION_CONSTANT))
+		if (abs(evaluate(EVALUATION_CONSTANT)) <= abs(rhs.evaluate(EVALUATION_CONSTANT)))
 			return true;
 
 		return false;
+	}
+
+	// Divide polynomials via overloaded binary modulus operator.
+	const Polynomial operator% (Polynomial& rhs)
+	{
+		// TODO: 
+		return Polynomial();
+	}
+	
+	// Polynomial long division via overloaded binary divide operator.
+	const Polynomial operator/ (Polynomial& divisor) 
+	{
+		// Check for division by zero.
+		if (divisor.getDegree() == 0 && divisor[0] == 0)
+			throw std::overflow_error("Divide by zero");
+
+		// Is divisor larger than dividend?
+		if (divisor > *this)
+			// Return zero.
+			return Polynomial();
+
+		Polynomial dividend = *this;
+		Polynomial quotient;
+
+		// Iterate through all dividend terms.
+		do {
+			// Divide coefficients of highest terms, subtract exponents, insert as new quotient term.
+			quotient.setTerm(dividend.getDegree() - divisor.getDegree(), dividend[dividend.getDegree()] / divisor[divisor.getDegree()]);
+
+			// Multiply divisor by quotient and subtract from dividend.
+			dividend = *this - (divisor * quotient);
+
+			// Repeat until reaching final term.
+		} while (dividend.getDegree() != 0);
+
+		return quotient;
 	}
 
 	// Stream polynomial.
