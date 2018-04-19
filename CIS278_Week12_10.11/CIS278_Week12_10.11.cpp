@@ -113,6 +113,10 @@ int main()
 	// Output some information about polynomials.
 	cout << "(" << dividend << ") / (" << divisor << ") = " << (dividend / divisor) << endl;
 
+	Polynomial aa({ { 3, 1. },{ 2, -2. },{ 0, -4. } });
+	Polynomial bb({ { 1, 1 },{ 0, -3 } });
+	cout << "(" << dividend << ") / (" << divisor << ") = " << (aa / bb) << endl;
+
 	return 0;
 }
 #endif
