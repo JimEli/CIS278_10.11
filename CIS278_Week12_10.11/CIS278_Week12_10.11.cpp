@@ -34,6 +34,7 @@
 * Change Log:
 *   02/18/2018: Initial release. JME
 *   04/12/2018: Added boost test file. JME
+*   04/19/2018: Removed degree added [] operators. JME
 *************************************************************************/
 #ifdef NDEBUG
 
