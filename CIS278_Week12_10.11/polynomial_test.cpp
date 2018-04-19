@@ -45,6 +45,12 @@ BOOST_AUTO_TEST_CASE(test_instantiation)
 	// Create same polynomial with list initalizer.
 	Polynomial b({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
 
+	// Create polynomial using overloaded index operator.
+	Polynomial d;
+	d[4] = 7.;
+	d[2] = -1.;
+	d[0] = 3.;
+
 	// Polynomials equal?
 	double c;
 
@@ -63,6 +69,7 @@ BOOST_AUTO_TEST_CASE(test_instantiation)
 	b.getTerm(0, c);
 
 	BOOST_CHECK_EQUAL(c, 3.);
+	BOOST_CHECK(a == d);
 	BOOST_CHECK(a == b);
 	BOOST_CHECK(!(a != b));
 
@@ -124,14 +131,20 @@ BOOST_AUTO_TEST_CASE(test_multiplication)
 BOOST_AUTO_TEST_CASE(test_division)
 {
 	// Create dividend polynomial, 7x^4 - 2x^2 + 3.
-	Polynomial dividend({ { 4, 7. }, { 2, -2. }, { 0, 3. } });
+	Polynomial dividend({ { 4, 7. },{ 2, -2. },{ 0, 3. } });
 	// Create divisor polynomial, x + 1.
-	Polynomial divisor({ { 1, 1 }, { 0, 1 } });
+	Polynomial divisor({ { 1, 1 },{ 0, 1 } });
 	// Answer to division, 7x^3 - 7x^2 + 5x - 5 (remainder 8).
-	Polynomial answer({ { 3, 7. }, { 2, -7. }, { 1, 5. }, { 0, -5. } });
+	Polynomial answer({ { 3, 7. },{ 2, -7. },{ 1, 5. },{ 0, -5. } });
 
 	// Division (7x^4 - 2x^2 + 3) / (x + 1) = 7x^3 - 7x^2 + 5x - 5 (remainder 8).
 	BOOST_CHECK(answer == (dividend / divisor));
+
+	Polynomial a({ { 3, 1. },{ 2, -2. },{ 0, -4. } });
+	Polynomial b({ { 1, 1 },{ 0, -3 } });
+	Polynomial ans({ { 2, 1. }, { 1, 1. }, { 0, 3. } });
+
+	BOOST_CHECK(ans == (a / b));
 }
 
 BOOST_AUTO_TEST_CASE(test_unary_addition) 
