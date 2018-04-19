@@ -5,19 +5,10 @@ Polynomial::Polynomial()
 {
 	// Empty polynomial.
 	terms.clear();
-	// Initialize as null polynomial.
-	setTerm(0, 0);
-	// No degree.
-	degree = 0;
 }
 
 // List initaializer constructor.
-Polynomial::Polynomial(std::initializer_list<std::pair<const unsigned, double>> init) : terms(init)
-{
-	// Init empty 0 term in polynomial.
-	if (!exists(0))
-		setTerm(0, 0.);
-}
+Polynomial::Polynomial(std::initializer_list<std::pair<const unsigned, double>> init) : terms(init) { }
 
 // Determines if a term exists for exponent.
 bool Polynomial::exists(const unsigned& exponent) const
@@ -30,13 +21,7 @@ void Polynomial::setTerm(const unsigned exponent, const double coefficient)
 {
 	// Set or update an existing polynomial term.
 	if (coefficient != 0.)
-	{
 		terms[exponent] += coefficient;
-
-		// Update polynomial degree.
-		if (exponent > degree)
-			degree = exponent;
-	}
 }
 
 // Getter function for term coefficient.
@@ -53,16 +38,23 @@ bool const Polynomial::getTerm(const unsigned exponent, double& coefficient)
 }
 
 // Getter function for polynomial degree.
-unsigned Polynomial::getDegree() const
+unsigned Polynomial::getDegree() 
 {
 	// Check for and remove any null terms.
-	// TODO.
-	
+	std::map<unsigned, double>::iterator it = terms.begin();
+	while (it != terms.end()) 
+	{
+		if ((*it).second == 0.) 
+			it = terms.erase(it);
+		else 
+			++it;
+	}
+
 	// Return highest degree.
 	return terms.rbegin()->first;
 }
 
-// Calculate polynomial evaluated at x.
+// Evaluate polynomial at x.
 double Polynomial::evaluate(double x)
 {
 	double p{ 0. };
@@ -77,11 +69,12 @@ double Polynomial::evaluate(double x)
 Polynomial Polynomial::differentiate()
 {
 	Polynomial derivative;
+	unsigned degree = getDegree();
 
 	if (degree == 0)
 		return derivative;
 
-	derivative.degree = degree - 1;
+//	derivative.degree = degree - 1;
 	// Calculate looping through all terms.
 	for (unsigned i = 0; i < degree; i++)
 		if (exists(i + 1))
