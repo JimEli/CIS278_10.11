@@ -140,16 +140,20 @@ bool correctMessage(const std::overflow_error& ex)
 BOOST_AUTO_TEST_CASE(test_division)
 {
 	// Test division with remainder.
-	Polynomial a({ { 3, 1. },{ 2, -2. },{ 0, -4. } });
-	Polynomial b({ { 1, 1 },{ 0, -3 } });
-	Polynomial answer1({ { 2, 1. },{ 1, 1. },{ 0, 3. } });
+	Polynomial a({ { 3, 1. }, { 2, -2. }, { 0, -4. } });
+	Polynomial b({ { 1, 1 }, { 0, -3 } });
+	Polynomial answer1({ { 2, 1. }, { 1, 1. }, { 0, 3. } });
+	Polynomial answer2({ { 0, 5. } });
 	BOOST_CHECK(answer1 == (a / b));
+	BOOST_CHECK(answer2 == (a % b));
 
 	// Test division without remainder.
-	Polynomial c({ { 2, 1. },{ 1, 2. },{ 0, 2. } });
-	Polynomial d({ { 1, 1 },{ 0, 1 } });
-	Polynomial answer2({ { 1, 1. },{ 0, 1. } });
-	BOOST_CHECK(answer2 == (c / d));
+	Polynomial c({ { 2, 1. }, { 1, 2. }, { 0, 2. } });
+	Polynomial d({ { 1, 1 }, { 0, 1 } });
+	Polynomial answer3({ { 1, 1. }, { 0, 1. } });
+	Polynomial answer4({ { 0, 0. } });
+	BOOST_CHECK(answer3 == (c / d));
+	BOOST_CHECK(answer4 == (c % d));
 
 	// Test divide by zero exception.
 	Polynomial e;
