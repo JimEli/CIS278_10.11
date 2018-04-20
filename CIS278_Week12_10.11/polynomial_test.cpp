@@ -28,11 +28,13 @@
 #include "polynomial.h" // Our polynomial class.
 
 #define BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
-#define BOOST_TEST_MODULE Test_Polynomial
+#define BOOST_TEST_MODULE TestPolynomial
 #include <boost\test\unit_test.hpp>
 
 using std::cout;
 using std::endl;
+
+BOOST_AUTO_TEST_SUITE(TestPolynomial)
 
 BOOST_AUTO_TEST_CASE(test_instantiation) 
 {
@@ -128,23 +130,30 @@ BOOST_AUTO_TEST_CASE(test_multiplication)
 	BOOST_CHECK(answer == (a * b));
 }
 
+// Test for our exception message.
+bool correctMessage(const std::overflow_error& ex)
+{
+	BOOST_CHECK_EQUAL(ex.what(), std::string("Divide by zero"));
+	return true;
+}
+
 BOOST_AUTO_TEST_CASE(test_division)
 {
-	// Create dividend polynomial, 7x^4 - 2x^2 + 3.
-	Polynomial dividend({ { 4, 7. },{ 2, -2. },{ 0, 3. } });
-	// Create divisor polynomial, x + 1.
-	Polynomial divisor({ { 1, 1 },{ 0, 1 } });
-	// Answer to division, 7x^3 - 7x^2 + 5x - 5 (remainder 8).
-	Polynomial answer({ { 3, 7. },{ 2, -7. },{ 1, 5. },{ 0, -5. } });
-
-	// Division (7x^4 - 2x^2 + 3) / (x + 1) = 7x^3 - 7x^2 + 5x - 5 (remainder 8).
-	BOOST_CHECK(answer == (dividend / divisor));
-
+	// Test division with remainder.
 	Polynomial a({ { 3, 1. },{ 2, -2. },{ 0, -4. } });
 	Polynomial b({ { 1, 1 },{ 0, -3 } });
-	Polynomial ans({ { 2, 1. }, { 1, 1. }, { 0, 3. } });
+	Polynomial answer1({ { 2, 1. },{ 1, 1. },{ 0, 3. } });
+	BOOST_CHECK(answer1 == (a / b));
 
-	BOOST_CHECK(ans == (a / b));
+	// Test division without remainder.
+	Polynomial c({ { 2, 1. },{ 1, 2. },{ 0, 2. } });
+	Polynomial d({ { 1, 1 },{ 0, 1 } });
+	Polynomial answer2({ { 1, 1. },{ 0, 1. } });
+	BOOST_CHECK(answer2 == (c / d));
+
+	// Test divide by zero exception.
+	Polynomial e;
+	BOOST_CHECK_EXCEPTION((a / e), std::overflow_error, correctMessage);
 }
 
 BOOST_AUTO_TEST_CASE(test_unary_addition) 
@@ -216,4 +225,7 @@ BOOST_AUTO_TEST_CASE(test_comparison)
 	BOOST_CHECK(b <= a);
 	BOOST_CHECK(a >= b);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
+
 #endif
