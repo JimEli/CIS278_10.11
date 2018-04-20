@@ -25,7 +25,11 @@
 
 #include <iostream>  // cout/endl
 
-#include "polynomial.h" // Our polynomial class.
+// Visual Leak Detector.
+#include "C:\Program Files (x86)\Visual Leak Detector\include\vld.h"
+
+// Our polynomial class.
+#include "polynomial.h"
 
 #define BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
 #define BOOST_TEST_MODULE TestPolynomial
@@ -36,7 +40,7 @@ using std::endl;
 
 BOOST_AUTO_TEST_SUITE(TestPolynomial)
 
-BOOST_AUTO_TEST_CASE(test_instantiation) 
+BOOST_AUTO_TEST_CASE(instantiation) 
 {
 	// Create polynomial, 7x^4 - x^2 + 3.
 	Polynomial a;
@@ -80,7 +84,7 @@ BOOST_AUTO_TEST_CASE(test_instantiation)
 	BOOST_CHECK_EQUAL(b.getDegree(), 4);
 }
 
-BOOST_AUTO_TEST_CASE(test_assignment)
+BOOST_AUTO_TEST_CASE(assignment)
 {
 	// Create polynomial, 7x^4 - x^2 + 3.
 	Polynomial a({ { 4, 7 }, { 2, -1 }, { 0, 3 } });
@@ -91,7 +95,7 @@ BOOST_AUTO_TEST_CASE(test_assignment)
 	BOOST_CHECK(a == b);
 }
 
-BOOST_AUTO_TEST_CASE(test_addition) 
+BOOST_AUTO_TEST_CASE(addition) 
 {
 	// Create polynomial, 7x^4 - x^2 + 3.
 	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
@@ -104,7 +108,7 @@ BOOST_AUTO_TEST_CASE(test_addition)
 	BOOST_CHECK(answer == (a + b));
 }
 
-BOOST_AUTO_TEST_CASE(test_subtraction)
+BOOST_AUTO_TEST_CASE(subtraction)
 {
 	// Create polynomial, 7x^4 - x^2 + 3.
 	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
@@ -117,7 +121,7 @@ BOOST_AUTO_TEST_CASE(test_subtraction)
 	BOOST_CHECK(answer == (a - b));
 }
 
-BOOST_AUTO_TEST_CASE(test_multiplication)
+BOOST_AUTO_TEST_CASE(multiplication)
 {
 	// Create polynomial, 7x^4 - x^2 + 3.
 	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
@@ -137,7 +141,7 @@ bool correctMessage(const std::overflow_error& ex)
 	return true;
 }
 
-BOOST_AUTO_TEST_CASE(test_division)
+BOOST_AUTO_TEST_CASE(division_modulus)
 {
 	// Test division with remainder.
 	Polynomial a({ { 3, 1. }, { 2, -2. }, { 0, -4. } });
@@ -160,7 +164,7 @@ BOOST_AUTO_TEST_CASE(test_division)
 	BOOST_CHECK_EXCEPTION((a / e), std::overflow_error, correctMessage);
 }
 
-BOOST_AUTO_TEST_CASE(test_unary_addition) 
+BOOST_AUTO_TEST_CASE(unary_addition) 
 {
 	// Create identical polynomials, 7x^4 - x^2 + 3.
 	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
@@ -173,7 +177,7 @@ BOOST_AUTO_TEST_CASE(test_unary_addition)
 	BOOST_CHECK(a == answer);
 }
 
-BOOST_AUTO_TEST_CASE(test_unary_subtraction)
+BOOST_AUTO_TEST_CASE(unary_subtraction)
 {
 	// Create polynomial, 14x^4 - 2x^2 + 6.
 	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
@@ -187,7 +191,7 @@ BOOST_AUTO_TEST_CASE(test_unary_subtraction)
 	BOOST_CHECK(a == answer);
 }
 
-BOOST_AUTO_TEST_CASE(test_unary_multiplication)
+BOOST_AUTO_TEST_CASE(unary_multiplication)
 {
 	// Create polynomial, 14x^4 - 2x^2 + 6.
 	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
@@ -201,7 +205,7 @@ BOOST_AUTO_TEST_CASE(test_unary_multiplication)
 	BOOST_CHECK(a == answer);
 }
 
-BOOST_AUTO_TEST_CASE(test_unary_negate)
+BOOST_AUTO_TEST_CASE(unary_negate)
 {
 	// Create polynomial, 14x^4 - 2x^2 + 6.
 	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
@@ -212,7 +216,7 @@ BOOST_AUTO_TEST_CASE(test_unary_negate)
 	BOOST_CHECK(answer == -a);
 }
 
-BOOST_AUTO_TEST_CASE(test_comparison)
+BOOST_AUTO_TEST_CASE(comparison)
 {
 	// Create unequal polynomials (a is larger).
 	Polynomial a({ { 4, 14.1 }, { 2, -2. }, { 0, 6. } });
