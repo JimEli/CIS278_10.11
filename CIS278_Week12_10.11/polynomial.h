@@ -190,25 +190,21 @@ public:
 	// Overloaded unary minus operator.
 	const Polynomial operator- ()
 	{
-		Polynomial lhs = *this;
-
 		// Iterate through all terms negating them.
-		for (auto& t : lhs.terms)
+		for (auto& t : (*this).terms)
 			t.second = -t.second;
 
-		return lhs;
+		return *this;
 	}
 
 	// Overload equality operator.
 	const bool operator== (Polynomial rhs)
 	{
-		Polynomial lhs = *this;
-
-		if (lhs.getDegree() != rhs.getDegree())
+		if ((*this).getDegree() != rhs.getDegree())
 			return false;
 
-		// Iterate through all lhs terms.
-		for (auto& t : lhs.terms)
+		// Iterate through all terms, check equal.
+		for (auto& t : (*this).terms)
 			// If coefficients don't match then fail.
 			if (rhs[t.first] != t.second)
 				return false;
@@ -261,17 +257,18 @@ public:
 	// Divide polynomials via overloaded binary modulus operator.
 	const Polynomial operator% (Polynomial& divisor)
 	{
-		// TODO: combine this and division opaerator.
 		// Check for division by zero.
 		if (divisor.getDegree() == 0 && divisor[0] == 0)
 			throw std::overflow_error("Divide by zero");
 
+		// Preserve this.
+		Polynomial dividend = *this;
+
 		// Is divisor larger than dividend?
-		if (divisor > *this)
+		if (divisor > dividend)
 			// Return zero.
 			return Polynomial();
 
-		Polynomial dividend = *this;
 		Polynomial quotient;
 
 		// Iterate through all dividend terms.
@@ -289,18 +286,20 @@ public:
 	}
 	
 	// Polynomial long division via overloaded binary divide operator.
-	const Polynomial operator/ (Polynomial& divisor) 
+	const Polynomial operator/ (Polynomial& divisor)
 	{
 		// Check for division by zero.
 		if (divisor.getDegree() == 0 && divisor[0] == 0)
 			throw std::overflow_error("Divide by zero");
 
+		// Preserve this.
+		Polynomial dividend = *this;
+
 		// Is divisor larger than dividend?
-		if (divisor > *this)
+		if (divisor > dividend)
 			// Return zero.
 			return Polynomial();
 
-		Polynomial dividend = *this;
 		Polynomial quotient;
 
 		// Iterate through all dividend terms.
