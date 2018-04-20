@@ -323,22 +323,28 @@ public:
 		// Loop, filling string with poly terms.
 		std::string s{ "" };
 
-		// Iterate backwards through all terms.
-		for (auto& t : reverse(p.terms))
+		// Check for zero polynomial first.
+		if (p.terms.empty())
+			s = "0";
+		else
 		{
-			// Only terms with coefficients are printed.
-			if (t.second)
+			// Iterate backwards through all terms.
+			for (auto& t : reverse(p.terms))
 			{
-				std::stringstream stream;
+				// Only terms with coefficients are printed.
+				if (t.second)
+				{
+					std::stringstream stream;
 
-				// Print leading sign except on first term.
-				s += (t.second > 0 ? (t == *p.terms.rbegin() ? "" : " + ") : " - ");
-				stream << std::fixed << std::setprecision(1) << abs(t.second);
-				// Skip display of superfluous 0 exponent?
-				if (t.first)
-					stream << "x^" << t.first;
-				// Add to string.
-				s += stream.str();
+					// Print leading sign except on first term.
+					s += (t.second > 0 ? (t == *p.terms.rbegin() ? "" : " + ") : " - ");
+					stream << std::fixed << std::setprecision(1) << abs(t.second);
+					// Skip display of superfluous 0 exponent?
+					if (t.first)
+						stream << "x^" << t.first;
+					// Add to string.
+					s += stream.str();
+				}
 			}
 		}
 
