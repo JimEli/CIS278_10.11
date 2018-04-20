@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- * Using reverse iterators with C++11 range-based "for" loops.
+ * Reverse iterators with C++11 range-based "for" loops.
  * 
  * Unfortunately, STL classes/containers allow iterating in a 
  * reverse order using reverse_iterators, but there is no support
@@ -18,34 +16,53 @@
  *   for(char c : reverse(s))
  *     cout << c;
  */
+#pragma once
 
 template<class C>
-class const_reverse_wrapper {
+class const_reverse_wrapper 
+{
 	const C& container;
-
 public:
 	const_reverse_wrapper(const C& cont) : container(cont) { }
-	decltype(container.rbegin()) begin() const { return container.rbegin(); }
-	decltype(container.rend()) end() const { return container.rend(); }
+	
+	decltype(container.rbegin()) begin() const 
+	{ 
+		return container.rbegin(); 
+	}
+	
+	decltype(container.rend()) end() const 
+	{ 
+		return container.rend(); 
+	}
 };
 
 template<class C>
-class reverse_wrapper {
+class reverse_wrapper 
+{
 	C& container;
-
 public:
 	reverse_wrapper(C& cont) : container(cont) { }
-	decltype(container.rbegin()) begin() { return container.rbegin(); }
-	decltype(container.rend()) end() { return container.rend(); }
+	
+	decltype(container.rbegin()) begin() 
+	{ 
+		return container.rbegin(); 
+	}
+	
+	decltype(container.rend()) end() 
+	{ 
+		return container.rend(); 
+	}
 };
 
 template<class C>
-const_reverse_wrapper<C> reverse(const C& cont) {
+const_reverse_wrapper<C> reverse(const C& cont)
+{
 	return const_reverse_wrapper<C>(cont);
 }
 
 template<class C>
-reverse_wrapper<C> reverse(C& cont) {
+reverse_wrapper<C> reverse(C& cont)
+{
 	return reverse_wrapper<C>(cont);
 }
 
