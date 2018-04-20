@@ -22,9 +22,10 @@
 *      operator (-=), and multiplication assignment operator (*=).
 *
 * Notes:
-*  (1) Degree, unary minus, stream and untested evaluate and differentiate
-*      methods added.
-*  (2) Compiled with MS Visual Studio 2017 Community (v141).
+*  (1) division, modulus, unary minus, [], comparison, stream and untested
+*      evaluate and differentiate methods/operators added also.
+*  (2) Compile release version if boost is not installed.
+*  (3) Compiled with MS Visual Studio 2017 Community (v141).
 *
 * Submitted in partial fulfillment of the requirements of PCC CIS-278.
 *************************************************************************
@@ -72,8 +73,7 @@ public:
 	// Getter function for term coefficient.
 	bool const getTerm(const unsigned exponent, double& coefficient);
 	// Getter function for polynomial degree.
-	//unsigned getDegree() const;
-	unsigned getDegree();
+	unsigned const getDegree();
 
 	// Evaluate polynomial at x (used by comparison operations).
 	double evaluate(double x);
@@ -225,7 +225,7 @@ public:
 	// Overload greater than operator.
 	const bool operator> (Polynomial rhs)
 	{
-		if (abs(evaluate(EVALUATION_CONSTANT)) > abs(rhs.evaluate(EVALUATION_CONSTANT)))
+		if (fabs(evaluate(EVALUATION_CONSTANT)) > fabs(rhs.evaluate(EVALUATION_CONSTANT)))
 			return true;
 
 		return false;
@@ -234,7 +234,7 @@ public:
 	// Overload greater than or equal operator.
 	const bool operator>= (Polynomial rhs)
 	{
-		if (abs(evaluate(EVALUATION_CONSTANT)) >= abs(rhs.evaluate(EVALUATION_CONSTANT)))
+		if (fabs(evaluate(EVALUATION_CONSTANT)) >= fabs(rhs.evaluate(EVALUATION_CONSTANT)))
 			return true;
 
 		return false;
@@ -243,7 +243,7 @@ public:
 	// Overload less than operator.
 	const bool operator< (Polynomial rhs)
 	{
-		if (abs(evaluate(EVALUATION_CONSTANT)) < abs(rhs.evaluate(EVALUATION_CONSTANT)))
+		if (fabs(evaluate(EVALUATION_CONSTANT)) < fabs(rhs.evaluate(EVALUATION_CONSTANT)))
 			return true;
 
 		return false;
@@ -252,17 +252,40 @@ public:
 	// Overload less than or equal operator.
 	const bool operator<= (Polynomial rhs)
 	{
-		if (abs(evaluate(EVALUATION_CONSTANT)) <= abs(rhs.evaluate(EVALUATION_CONSTANT)))
+		if (fabs(evaluate(EVALUATION_CONSTANT)) <= fabs(rhs.evaluate(EVALUATION_CONSTANT)))
 			return true;
 
 		return false;
 	}
 
 	// Divide polynomials via overloaded binary modulus operator.
-	const Polynomial operator% (Polynomial& rhs)
+	const Polynomial operator% (Polynomial& divisor)
 	{
-		// TODO: 
-		return Polynomial();
+		// TODO: combine this and division opaerator.
+		// Check for division by zero.
+		if (divisor.getDegree() == 0 && divisor[0] == 0)
+			throw std::overflow_error("Divide by zero");
+
+		// Is divisor larger than dividend?
+		if (divisor > *this)
+			// Return zero.
+			return Polynomial();
+
+		Polynomial dividend = *this;
+		Polynomial quotient;
+
+		// Iterate through all dividend terms.
+		do {
+			// Divide coefficients of highest terms, subtract exponents, insert as new quotient term.
+			quotient[dividend.getDegree() - divisor.getDegree()] = dividend[dividend.getDegree()] / divisor[divisor.getDegree()];
+
+			// Multiply divisor by quotient and subtract from dividend.
+			dividend = *this - (divisor * quotient);
+
+			// Repeat until reaching final term.
+		} while (dividend.getDegree() != 0);
+
+		return dividend;
 	}
 	
 	// Polynomial long division via overloaded binary divide operator.
@@ -283,7 +306,7 @@ public:
 		// Iterate through all dividend terms.
 		do {
 			// Divide coefficients of highest terms, subtract exponents, insert as new quotient term.
-			quotient.setTerm(dividend.getDegree() - divisor.getDegree(), dividend[dividend.getDegree()] / divisor[divisor.getDegree()]);
+			quotient[dividend.getDegree() - divisor.getDegree()] = dividend[dividend.getDegree()] / divisor[divisor.getDegree()];
 
 			// Multiply divisor by quotient and subtract from dividend.
 			dividend = *this - (divisor * quotient);
