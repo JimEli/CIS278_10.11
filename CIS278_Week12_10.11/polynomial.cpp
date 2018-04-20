@@ -38,10 +38,11 @@ bool const Polynomial::getTerm(const unsigned exponent, double& coefficient)
 }
 
 // Getter function for polynomial degree.
-unsigned Polynomial::getDegree() 
+unsigned const Polynomial::getDegree() 
 {
 	// Check for and remove any null terms.
 	std::map<unsigned, double>::iterator it = terms.begin();
+
 	while (it != terms.end()) 
 	{
 		if ((*it).second == 0.) 
@@ -50,8 +51,11 @@ unsigned Polynomial::getDegree()
 			++it;
 	}
 
-	// Return highest degree.
-	return terms.rbegin()->first;
+	// Return highest degree or zero.
+	if (!terms.empty())
+		return terms.rbegin()->first;
+	else 
+		return 0;
 }
 
 // Evaluate polynomial at x.
