@@ -17,8 +17,9 @@ Has the coefficient 2 and the exponent 4. Develop a complete class containing pr
 
 
 Notes:
-* Degree, unary minus, stream and untested evaluate and differentiate methods added also.
-* Compiled with MS Visual Studio 2017 Community (v141).
+* Division, modulus, unary minus, [], comparison, stream and untested evaluate and differentiate methods/operators added also.
 * Uses Boost Test.
+* Compile release version if boost is not installed.
+* Compiled with MS Visual Studio 2017 Community (v141).
 * Submitted in partial fulfillment of the requirements of PCC CIS-278.
 
