@@ -279,8 +279,8 @@ public:
 			// Multiply divisor by quotient and subtract from dividend.
 			dividend = *this - (divisor * quotient);
 
-			// Repeat until reaching final term.
-		} while (dividend.getDegree() != 0);
+			// Repeat until reaching final term or divison is complete.
+		} while ((dividend.getDegree() != 0) && (dividend.getDegree() >= divisor.getDegree()));
 
 		return dividend;
 	}
@@ -310,8 +310,8 @@ public:
 			// Multiply divisor by quotient and subtract from dividend.
 			dividend = *this - (divisor * quotient);
 
-			// Repeat until reaching final term.
-		} while (dividend.getDegree() != 0);
+			// Repeat until reaching final term or divison is complete.
+		} while ((dividend.getDegree() != 0) && (dividend.getDegree() >= divisor.getDegree()));
 
 		return quotient;
 	}
