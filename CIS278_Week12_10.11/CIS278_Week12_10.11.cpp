@@ -49,75 +49,94 @@ using std::endl;
 int main()
 {
 	// Demo.
-	cout << "Polynomial Class Demonstration Program\n\n";
+	cout << "Polynomial Class Demonstration Program\n";
 
-	// Create a polynomial, 7x^4 - x^2 + 3.
+	// Create polynomial, 7x^4 - x^2 + 3.
 	Polynomial a;
 	a.setTerm(4, 7.);
 	a.setTerm(2, -1.);
 	a.setTerm(0, 3.);
-
-	// Create another polynomial, -3x^2 + 4 with list initalizer.
+	// Create polynomial, -3x^2 + 4 with list initalizer.
 	Polynomial b({ { 2, -3. }, { 0, 4. } });
 
 	// Output some information about polynomials.
-	cout << "degree of (" << a << ") is: " << a.getDegree() << endl;
-	
+	cout << " degree of (" << a << ") is: " << a.getDegree() << endl;
 	// Get a term's coefficient.
 	double c;
 	if (b.getTerm(2, c))
-		cout << "Coefficient of 2nd term of (" << b << ") is: " << c << endl;
-	cout << "Coefficient of 2nd term of (" << b << ") is: " << b[2] << endl;
+	{
+		cout << " Coefficient of 2nd term of (" << b << ") is: " << c << endl;
+		//cout << " Coefficient of 2nd term of (" << b << ") is: " << b[2] << endl;
+	}
 
 	// These two methods not fully tested.
-	//cout << "(" << a << ") evaluated at 2 = " << a.evaluate(2) << endl;
-	//cout << "Differentiate (" << a << ") = " << a.differentiate() << endl;
-
-	// Add, subtract and multiply binary operators.
-	cout << "(" << a << ") + (" << b << ") = " << (a + b) << endl;
-	cout << "(" << a << ") - (" << b << ") = " << (a - b) << endl;
-	cout << "(" << a << ") * (" << b << ") = " << (a * b) << endl;
+	//cout << " (" << a << ") evaluated at 2 = " << a.evaluate(2) << endl;
+	//cout << " Differentiate (" << a << ") = " << a.differentiate() << endl;
 
 	// Assignment operator.
-	cout << "a = " << a << endl;
+	cout << "Assignment:\n";
+	cout << " a = " << a << endl;
 	b = a;
-	cout << "Set b = a, now b = " << b << endl;
+	cout << " Set b = a, now b = " << b << endl;
+
+	// Add, subtract and multiply binary operators.
+	cout << "Add, subtract & multiply:\n";
+	cout << " (" << a << ") + (" << b << ") = " << (a + b) << endl;
+	cout << " (" << a << ") - (" << b << ") = " << (a - b) << endl;
+	cout << " (" << a << ") * (" << b << ") = " << (a * b) << endl;
 
 	// Unary add, subtract and multiply.
+	cout << "Unary add, subtract & multiply:\n";
 	a += b;
-	cout << "Set a += b, now a = " << a << endl;
+	cout << " Set a += b, now a = " << a << endl;
 	a -= b;
-	cout << "Set a -= b, now a = " << a << endl;
+	cout << " Set a -= b, now a = " << a << endl;
 	a *= b;
-	cout << "Set a *= b, now a = " << a << endl;
+	cout << " Set a *= b, now a = " << a << endl;
 
 	// Unary negate.
-	cout << "a = " << a << endl;
+	cout << "Unary negation:\n";
+	cout << " a = " << a << endl;
 	b = -a;
-	cout << "Set b = -a, now b = " << b << endl;
+	cout << " Set b = -a, now b = " << b << endl;
 
 	// Equality.
-	cout << "a = " << a << endl;
-	cout << "b = " << b << endl;
-	cout << "Is a == b? " << std::boolalpha << (a == b) << endl;
-	cout << "b = " << -b << endl;
-	cout << "Is a == -b now? " << std::boolalpha << (a == -b) << endl;
+	cout << "Equality:\n";
+	cout << " a = " << a << endl;
+	cout << " b = " << b << endl;
+	cout << "  Is a == b? " << std::boolalpha << (a == b) << endl;
+	cout << " b = " << -b << endl;
+	cout << "  Is a == -b now? " << std::boolalpha << (a == -b) << endl;
 
-	// Divison and modulus.
-	Polynomial aa({ { 3, 1. },{ 2, -2. },{ 0, -4. } });
-	Polynomial bb({ { 1, 1. },{ 0, -3. } });
-	cout << "(" << aa << ") / (" << bb << ") = " << (aa / bb) << endl;
-	cout << "(" << aa << ") % (" << bb << ") = " << (aa % bb) << endl;
+	// Divison and modulus (with remainder).
+	cout << "Division & modulus (with remainder):\n";
+	Polynomial e({ { 3, 1. },{ 2, -2. },{ 0, -4. } });
+	Polynomial f({ { 1, 1. },{ 0, -3. } });
+	cout << " (" << e << ") / (" << f << ") = " << (e / f) << endl;
+	cout << " (" << e << ") % (" << f << ") = " << (e % f) << endl;
 
-	Polynomial cc({ { 2, 1. },{ 1, 2. },{ 0, 2. } });
-	Polynomial dd({ { 1, 1. },{ 0, 1. } });
-	cout << "(" << cc << ") / (" << dd << ") = " << (cc / dd) << endl;
-	cout << "(" << cc << ") % (" << dd << ") = " << (cc % dd) << endl;
+	// Divison and modulus (with remainder).
+	//Polynomial g({ { 4, 5. },{ 3, 2. },{ 2, -3. },{ 1, 2. },{ 0, 2. } });
+	//Polynomial h({ { 2, 2. },{ 1, 3. },{ 0, 1. } });
+	//cout << "(" << g << ") / (" << h << ") = " << (g / h) << endl;
+	//cout << "(" << g << ") % (" << h << ") = " << (g % h) << endl;
 
-	Polynomial e({ { 2, 1. },{ 1, 2. },{ 0, 1. } });
-	Polynomial f({ { 1, 1. },{ 0, 1. } });
-	cout << "(" << e << ") / (" << f << ") = " << (e / f) << endl;
-	cout << "(" << e << ") % (" << f << ") = " << (e % f) << endl;
+	// Divison and modulus (without remainder).
+	cout << "Division & modulus (without remainder):\n";
+	Polynomial i({ { 2, 1. },{ 1, 2. },{ 0, 1. } });
+	Polynomial j({ { 1, 1. },{ 0, 1. } });
+	cout << " (" << i << ") / (" << j << ") = " << (i / j) << endl;
+	cout << " (" << i << ") % (" << j << ") = " << (i % j) << endl;
+
+	try
+	{
+		Polynomial e;
+		a = a / e;
+	}
+	catch (std::overflow_error ex)
+	{
+		cout << "Correctly caught attempted division by zero.\n";
+	}
 
 	return 0;
 }
