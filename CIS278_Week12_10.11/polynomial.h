@@ -129,6 +129,9 @@ public:
 			}
 		);
 
+		// Normalize polynomial.
+		result.getDegree();
+
 		return result;
 	}
 
@@ -146,6 +149,9 @@ public:
 			}
 		);
 
+		// Normalize polynomial.
+		result.getDegree();
+
 		return result;
 	}
 
@@ -162,6 +168,9 @@ public:
 				result.terms[lhsTerm.first + rhsTerm.first] += (lhsTerm.second * rhsTerm.second);
 			} );
 		} );
+
+		// Normalize polynomial.
+		result.getDegree();
 
 		return result;
 	}
@@ -282,6 +291,9 @@ public:
 			// Repeat until reaching final term or divison is complete.
 		} while ((dividend.getDegree() != 0) && (dividend.getDegree() >= divisor.getDegree()));
 
+		// Normalize polynomial.
+		dividend.getDegree();
+
 		return dividend;
 	}
 	
@@ -313,6 +325,9 @@ public:
 			// Repeat until reaching final term or divison is complete.
 		} while ((dividend.getDegree() != 0) && (dividend.getDegree() >= divisor.getDegree()));
 
+		// Normalize polynomial.
+		quotient.getDegree();
+
 		return quotient;
 	}
 
@@ -335,10 +350,10 @@ public:
 				{
 					std::stringstream stream;
 
-					// Print leading sign except on first term.
-					s += (t.second > 0 ? (t == *p.terms.rbegin() ? "" : " + ") : " - ");
+					// Print/format properly leading sign.
+					s += (t == *p.terms.rbegin()) ? (t.second < 0) ? "-" : "" : (t.second > 0) ? " - " : " + ";
 					stream << std::fixed << std::setprecision(1) << abs(t.second);
-					// Skip display of superfluous 0 exponent?
+					// Skip display of superfluous 0 exponent.
 					if (t.first)
 						stream << "x^" << t.first;
 					// Add to string.
