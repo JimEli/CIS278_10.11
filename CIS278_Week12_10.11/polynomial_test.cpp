@@ -89,7 +89,6 @@ BOOST_AUTO_TEST_CASE(assignment)
 	// Create polynomial, 7x^4 - x^2 + 3.
 	Polynomial a({ { 4, 7 }, { 2, -1 }, { 0, 3 } });
 	Polynomial b;
-
 	// Check assignment
 	b = a;
 	BOOST_CHECK(a == b);
@@ -97,40 +96,38 @@ BOOST_AUTO_TEST_CASE(assignment)
 
 BOOST_AUTO_TEST_CASE(addition) 
 {
-	// Create polynomial, 7x^4 - x^2 + 3.
-	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
-	// Create polynomial, -3x^2 + 4.
-	Polynomial b({ { 2, -3. }, { 0, 4. } });
-	// Answer to addition, 7.0x^4 - 4.0x^2 + 7.0
-	Polynomial answer({ { 4, 7. }, { 2, -4. }, { 0, 7. } });
-	
 	// Add (7.0x^4 - 1.0x^2 + 3.0) + ( -3.0x^2 + 4.0) = 7.0x^4 - 4.0x^2 + 7.0
-	BOOST_CHECK(answer == (a + b));
+	Polynomial a({ { 4, 7. },{ 2, -1. },{ 0, 3. } });
+	Polynomial b({ { 2, -3. }, { 0, 4. } });
+	Polynomial answer1({ { 4, 7. },{ 2, -4. },{ 0, 7. } });
+	BOOST_CHECK(answer1 == (a + b));
+
+	// Add (7.0x^4 - 1.0x^2 + 3.0) + (-7.0x^4 + 4.0x^2 - 7.0) = 0
+	Polynomial c({ { 4, -7. },{ 2, 1. },{ 0, -3. } });
+	Polynomial answer2;
+	BOOST_CHECK(answer2 == (a + c));
 }
 
 BOOST_AUTO_TEST_CASE(subtraction)
 {
-	// Create polynomial, 7x^4 - x^2 + 3.
-	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
-	// Create polynomial, -3x^2 + 4.
-	Polynomial b({ { 2, -3. }, { 0, 4. } });
-	// Answer to subtraction, 7.0x^4 + 2.0x^2 - 1.0
-	Polynomial answer({ { 4, 7. }, { 2, 2. }, { 0, -1. } });
-	
 	// Subtract (7.0x^4 - 1.0x^2 + 3.0) - ( -3.0x^2 + 4.0) = 7.0x^4 + 2.0x^2 - 1.0
-	BOOST_CHECK(answer == (a - b));
+	Polynomial a({ { 4, 7. },{ 2, -1. },{ 0, 3. } });
+	Polynomial b({ { 2, -3. }, { 0, 4. } });
+	Polynomial answer1({ { 4, 7. },{ 2, 2. },{ 0, -1. } });
+	BOOST_CHECK(answer1 == (a - b));
+
+	// Subtract (7.0x^4 - 1.0x^2 + 3.0) - (7.0x^4 - 1.0x^2 + 3.0) = 0.0
+	Polynomial c({ { 4, 7. },{ 2, -1. },{ 0, 3. } });
+	Polynomial answer2; answer2[0] = 0.;
+	BOOST_CHECK(answer2 == (a - c));
 }
 
 BOOST_AUTO_TEST_CASE(multiplication)
 {
-	// Create polynomial, 7x^4 - x^2 + 3.
-	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
-	// Create polynomial, -3x^2 + 4.
-	Polynomial b({ { 2, -3. }, { 0, 4. } });
-	// Answer to multiplication, -21.0x^6 + 31.0x^4 - 13.0x^2 + 12.0
-	Polynomial answer({ { 6, -21. },{ 4, 31. },{ 2, -13. },{ 0, 12. } });
-
 	// Multiplication (7.0x^4 - 1.0x^2 + 3.0) * ( -3.0x^2 + 4.0) = -21.0x^6 + 31.0x^4 - 13.0x^2 + 12.0
+	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
+	Polynomial b({ { 2, -3. }, { 0, 4. } });
+	Polynomial answer({ { 6, -21. },{ 4, 31. },{ 2, -13. },{ 0, 12. } });
 	BOOST_CHECK(answer == (a * b));
 }
 
@@ -166,53 +163,49 @@ BOOST_AUTO_TEST_CASE(division_modulus)
 
 BOOST_AUTO_TEST_CASE(unary_addition) 
 {
-	// Create identical polynomials, 7x^4 - x^2 + 3.
-	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
-	Polynomial b({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
-	// Answer to addition, 14.0x^4 - 2.0x^2 + 6.0
-	Polynomial answer({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
-
 	// Unary add a += b, now a = 14.0x^4 - 2.0x^2 + 6.0
+	Polynomial a({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
+	Polynomial b({ { 4, 7. },{ 2, -1. },{ 0, 3. } });
+	Polynomial answer1({ { 4, 14. },{ 2, -2. },{ 0, 6. } });
 	a += b;
-	BOOST_CHECK(a == answer);
+	BOOST_CHECK(a == answer1);
+
+	Polynomial c({ { 4, -14. },{ 2, 2. },{ 0, -6. } });
+	Polynomial answer2;
+	a += c;
+	BOOST_CHECK(a == answer2);
 }
 
 BOOST_AUTO_TEST_CASE(unary_subtraction)
 {
-	// Create polynomial, 14x^4 - 2x^2 + 6.
-	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
-	// Create polynomial, 7x^4 - x^2 + 3.
-	Polynomial b({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
-	// Answer to subtraction, 7.0x^4 - 1.0x^2 + 3.0
-	Polynomial answer({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
-
 	// Unary subtract a -= b, now a = 7.0x^4 - 1.0x^2 + 3.0
+	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
+	Polynomial b({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
+	Polynomial answer1({ { 4, 7. },{ 2, -1. },{ 0, 3. } });
 	a -= b;
-	BOOST_CHECK(a == answer);
+	BOOST_CHECK(a == answer1);
+
+	Polynomial c({ { 4, 7. },{ 2, -1. },{ 0, 3. } });
+	Polynomial answer2;
+	a -= c;
+	BOOST_CHECK(a == answer2);
 }
 
 BOOST_AUTO_TEST_CASE(unary_multiplication)
 {
-	// Create polynomial, 14x^4 - 2x^2 + 6.
-	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
-	// Create polynomial, 7x^4 - x^2 + 3.
-	Polynomial b({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
-	// Answer to multiplication, 98.0x^8 - 28.0x^6 + 86.0x^4 - 12.0x^2 + 18.0
-	Polynomial answer({ { 8, 98. }, { 6, -28. }, { 4, 86. }, { 2, -12. }, { 0, 18. } });
-	
 	// Unary multiply a *= b, now a = 98.0x^8 - 28.0x^6 + 86.0x^4 - 12.0x^2 + 18.0
+	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
+	Polynomial b({ { 4, 7. }, { 2, -1. }, { 0, 3. } });
+	Polynomial answer({ { 8, 98. }, { 6, -28. }, { 4, 86. }, { 2, -12. }, { 0, 18. } });
 	a *= b;
 	BOOST_CHECK(a == answer);
 }
 
 BOOST_AUTO_TEST_CASE(unary_negate)
 {
-	// Create polynomial, 14x^4 - 2x^2 + 6.
-	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
-	// Negation of polynomial a.
-	Polynomial answer({ { 4, -14. }, { 2, 2. }, { 0, -6. } });
-
 	// Unary negate.
+	Polynomial a({ { 4, 14. }, { 2, -2. }, { 0, 6. } });
+	Polynomial answer({ { 4, -14. }, { 2, 2. }, { 0, -6. } });
 	BOOST_CHECK(answer == -a);
 }
 
