@@ -133,9 +133,9 @@ int main()
 		Polynomial e;
 		a = a / e;
 	}
-	catch (std::overflow_error ex)
+	catch (std::overflow_error& ex)
 	{
-		cout << "Correctly caught attempted division by zero.\n";
+		cout << "Caught attempted division by zero: " << ex.what() << std::endl;
 	}
 
 	return 0;
